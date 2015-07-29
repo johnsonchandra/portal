@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<meta name="version" content="Bootstrap 3.3.5">
+		<title>Portal Homepage</title>
+
+		<link href="styles/bootstrap.min.css" rel="stylesheet">
+		<link href="styles/bootstrap-extended.css" rel="stylesheet">
+		<link href="styles/bootstrap-extended-theme.css" rel="stylesheet">
+
+		<!-- [if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif] -->
+
+		<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+		<link rel="icon" href="images/favicon.ico">
+	</head>
+	<body>
+
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-theme" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="index.html">Ini Logo Perusahaan</a>
+				</div>
+				<div id="navbar-theme" class="navbar-collapse collapse" data-wpapi-name="getListMenu" data-wpapi-getListMenu='{"viewSize":-1,"viewIndex":-1}'>
+					<ul class="nav navbar-nav navbar-right" data-wpapi-loop="list-parent">
+						<li><a href="index.html">Home</a></li>
+						<li><a href="category_list.html">Category</a></li>
+						<li><a href="brand_list.html">Brand</a></li>
+						<li class="active"><a href="cart.html">Shopping Cart</a></li>
+						<li><a href="login.html">Login</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+
+		<main role="main" class="main-navbar-fixed-top">
+			
+			<div class="section" >
+				<div class="container" >
+					
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<p>Transaction-ID: 0908234098234 | Status: OPEN</p>
+						</div>
+						<div class="panel-body">
+							<p>Di sini Nama Orangnya</p>
+							<p>Di sini Alamat Pengiriman</p>
+						</div>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>
+										&nbsp;
+									</th>
+									<th>
+										Product
+									</th>
+									<th>
+										Total
+									</th>
+									</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">
+										<img width="50px" align="top" src="images_ecommerce/product/big-1.jpg"/>
+									</th>
+									<td>
+										<p>SKU asdkjfhjaskdf</p>
+										<p>nama product di sini </p>
+										<p>10 PCS * Rp. 100.000
+									</td>
+									<td align="right">
+										Rp. 1.000.000
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<img width="50px" align="top" src="images_ecommerce/product/big-1.jpg"/>
+									</th>
+									<td>
+										<p>SKU asdkjfhjaskdf</p>
+										<p>nama product di sini </p>
+										<p>10 PCS * Rp. 100.000
+									</td>
+									<td align="right">
+										Rp. 1.000.000
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<img width="50px" align="top" src="images_ecommerce/product/big-1.jpg"/>
+									</th>
+									<td>
+										<p>SKU asdkjfhjaskdf</p>
+										<p>nama product di sini </p>
+										<p>20 PCS * Rp. 100.000
+									</td>
+									<td align="right">
+										Rp. 25.000.000
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<img width="50px" align="top" src="images_ecommerce/product/big-1.jpg"/>
+									</th>
+									<td>
+										<p>SKU asdkjfhjaskdf</p>
+										<p>nama product di sini </p>
+										<p>10 PCS * Rp. 100.000
+									</td>
+									<td align="right">
+										Rp. 1.000.000
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<img width="50px" align="top" src="images_ecommerce/product/big-1.jpg"/>
+									</th>
+									<td>
+										<p>SKU asdkjfhjaskdf</p>
+										<p>nama product di sini </p>
+										<p>10 PCS * Rp. 100.000
+									</td>
+									<td align="right">
+										Rp. 1.000.000
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<table>
+						<tbody>
+							<tr>
+								<td>Sub-Total</td>
+								<td align="right">Rp. 092384098.</td>
+							</tr>
+							<tr>
+								<td>Shipping</td>
+								<td align="right">Rp. 092384098.</td>
+							</tr>
+							<tr>
+								<td>Tax</td>
+								<td align="right">Rp. 092384098.</td>
+							</tr>
+							<tr>
+								<td>Total</td>
+								<td align="right">Rp. 092384098.</td>
+							</tr>
+						</tbody>
+					</table>
+					<div>
+						<form action="payWithManualTransfer.html">
+							<input type="hidden" name="trxId" value="" />
+							<input type="submit" value="Pay with Manual Transfer"></input>
+						</form>						
+					</div>
+				</div><!-- /.container -->
+			</div><!-- /.section -->
+					
+			
+		</main>
+
+		<footer>
+			<div class="section" >
+				<div class="container" data-wpapi-name="getListLink" >
+					<div align="center">
+						<a href=""><img src="" />Ini Alamat Facebook</a>&nbsp;&nbsp;&nbsp;
+						<a href=""><img src="" />Ini Alamat Twitter</a>&nbsp;&nbsp;&nbsp;
+						<a href=""><img src="" />Ini Alamat Instagram</a>&nbsp;&nbsp;&nbsp;
+					</div>					
+				</div>
+		
+				<div class="container">
+					<hr/>
+	        		<p>Ini footer. taruh sitemap di sini aja kali yah</p>
+	      		</div>
+	      	</div>
+		</footer>
+
+		<script src="scripts/jquery-2.1.4.min.js"></script>
+		<script src="scripts/bootstrap.min.js"></script>
+		<script src="scripts/bootstrap-extended.js"></script>
+	</body>
+</html>

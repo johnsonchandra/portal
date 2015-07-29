@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<meta name="version" content="Bootstrap 3.3.5">
+		<title>Portal Homepage</title>
+
+		<link href="styles/bootstrap.min.css" rel="stylesheet">
+		<link href="styles/bootstrap-extended.css" rel="stylesheet">
+		<link href="styles/bootstrap-extended-theme.css" rel="stylesheet">
+
+		<!-- [if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif] -->
+
+		<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+		<link rel="icon" href="images/favicon.ico">
+	</head>
+	<body>
+
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-theme" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="index.html">Ini Logo Perusahaan</a>
+				</div>
+				<div id="navbar-theme" class="navbar-collapse collapse" data-wpapi-name="getListMenu" data-wpapi-getListMenu='{"viewSize":-1,"viewIndex":-1}'>
+					<ul class="nav navbar-nav navbar-right" data-wpapi-loop="list-parent">
+						<li class="active"><a href="index.html">Home</a></li>
+						
+						<li class="dropdown" data-wpapi-record="parent">
+							<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" data-wpapi-field="menuId" data-wpapi-text="menuName" >
+								Dropdown <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" data-wpapi-loop="list-children">
+								<li data-wpapi-record="children">
+									<a href="" data-wpapi-href="menuUrl" data-wpapi-field="menuId" data-wpapi-link="dynamic" data-wpapi-text="menuName" >Action</a>
+								</li>
+							</ul>
+						</li>
+						
+						<li class="dropdown" data-wpapi-record="parent">
+							<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >
+								Category Menu<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" >
+								<li>
+									<a href="article.html" >Article Detail</a>
+									<a href="article_list.html" >Article List</a>
+									<a href="category_list.html" >Category List</a>
+									<a href="brand.html" >Brand Detail</a>
+									<a href="brand_list.html" >Brand List</a>
+									<a href="article.html" >Shopping Cart</a>
+									<a href="article.html" >Article</a>
+								</li>
+							</ul>
+						</li>
+						
+						<li><a href="cart.html">Shopping Cart</a></li>
+						<li><a href="login.html">Login</a></li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<main role="main" class="main-navbar-fixed-top">
+			
+			<div class="section" data-wpapi-name="getListArticle" >
+				<div class="container" data-wpapi-loop="list" >
+					<div class="jumbotron" data-wpapi-record="record">
+						<h1 data-wpapi-field="articleTitle" >Article Terbaru</h1>
+						<p data-wpapi-field="articleSynopsis" >This is a template showcasing the optional theme stylesheet included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
+						<a href="article.html">Details</a>
+					</div>
+				</div>
+			</div>
+			
+			<div class="section" data-wpapi-name="getListLink" >
+				<div class="container" data-wpapi-loop="list" >
+					<ul data-wpapi-record="record">
+						<li>
+							<a href="" data-wpapi-href="linkUrl" data-wpapi-field="linkId" data-wpapi-link="dynamic" data-wpapi-text="linkName" >Link Name</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			
+		</main>
+
+		<script src="scripts/jquery-2.1.4.min.js"></script>
+		<script src="scripts/bootstrap.min.js"></script>
+		<script src="scripts/bootstrap-extended.js"></script>
+	</body>
+</html>

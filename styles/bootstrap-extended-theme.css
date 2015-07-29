@@ -1,0 +1,43 @@
+/* Bootstrap Extended Theme */
+
+/* Generator Pallete : http://mcg.mbitson.com/#/ */
+/*
+	Base Color	: #001848;
+	('wp-blue', {
+		"50"	:"#e6e8ed",
+		"100"	:"#b3bac8",
+		"200"	:"#808ca4",
+		"300"	:"#556585",
+		"400"	:"#2a3e66",
+		"500"	:"#001848",
+		"600"	:"#00153f",
+		"700"	:"#001236",
+		"800"	:"#000f2d",
+		"900"	:"#000c24",
+		"A100"	:"#b3bac8",
+		"A200"	:"#808ca4",
+		"A400"	:"#2a3e66",
+		"A700"	:"#001236"
+	});
+*/
+
+.example {
+	display: block;
+}
+.example .code {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #eee;
+}
+.example .code:last-child {
+	border-bottom-width: 0;
+}
+
+/*
+.theme-dropdown .dropdown-menu {
+  margin-bottom: 20px;
+  display: block;
+  position: static;
+}
+*/
