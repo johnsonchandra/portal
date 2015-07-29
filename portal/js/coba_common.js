@@ -1,108 +1,220 @@
 var portal = {
-	api: 'http://localhost:8080/json/',
-	uri_scripts: 'portal/js/',
-	uri_styles: 'portal/css/',
-	uri_pages: 'portal/pages/',
+	url_api: 'http://localhost:8080/json/',
+	url_scripts: 'portal/js/',
+	url_styles: 'portal/css/',
+	url_pages: 'portal/pages/',
 	ver: '800-000-1616.95.20150622',
 };
 
+function getParameter(name) {
+	var name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"),
+		regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		results = regex.exec(location.search);
+	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
-function getData(apiName, parameters, callback) {
+function acak(min, max, whole) {
+	console.log("acak called...");
+	return void 0===whole||!1===whole?Math.random()*(max-min+1)+min:!isNaN(parseFloat(whole))&&0<=parseFloat(whole)&&20>=parseFloat(whole)?(Math.random()*(max-min+1)+min).toFixed(whole):Math.floor(Math.random()*(max-min+1))+min;
+};
+
+function checkDevice(){
+	var userAgent = navigator.userAgent.toLowerCase();
+	if( /windows phone/i.test(userAgent) ){
+		return "windowsPhone";
+	}else
+	if( /android/i.test(userAgent) ){
+		return "Android";
+	}else
+	if( /ipad|iphone|ipod/i.test(userAgent) ){
+		return "iOS";
+	}else{
+		return "Browser";
+	}
+}// end checkDevice
+
+
+
+function getData(requestUrl, requestType, responseType, parameters, $this, callback) {
 	var request = $.ajax({
-		type: "POST",
-		url: portal.api + apiName,
+		type: requestType,
+		url: requestUrl,
 		data: parameters,
-		dataType: 'json'
+		dataType: responseType
 	});
 
 	request.done(function(data, status, xhr) {
-		console.log("data.wpCode: "+data.wpCode);
-		data.apiName = apiName;
-		
-		if (typeof(callback) == "function") {
-			callback(data);
-		}		
-		
+		data.apiName = 
+		callback($this, data);
 	})// end request.done
 
 	request.fail(function(xhr, status, error) {
-		// console.log(xhr, status, error);
-		console.log('%c Error when requesting to "' + apiName + '" ', dev.log.error);
-		// this is very bad. either server not responding or failed security check
-		// FIXME if user hasnt login yet, it still fail. this affects the error-handling.
-		// FIXME if user hasnt logined yet, must reply with wpCode!!!
-		// bisa bedain gak yah di belakang, antara yg musti login sama yg beneran error. mungkin harus oprek framework ofbiz dikit
-
-		// window.location = "error.html";
-
-		// $('[data-api-name="'+apiName+'"]').remove();
-		var data = {};
-		data.wpCode = "-1";
-		data.wpMessage = "Fatal Error";
-		
-		if (typeof(callback) == "function") {
-			callback(data);
-		}		
-		
+		console.log('Error when requesting to "' + requestUrl + '" ');
+		callback($this, null);
 	})
-}// end getData
+}// end getPage
 
+function parseData($this, data){	
+	if(data){
+		if(data.wpCode === "999") {
+			$.each( $this.data(),function(i, e) {
+				console.log('name='+ i + ' value=' +e);
+			});
+			
+			var apiName = $this.data('wp-apiname');
+			var loopType = $this.data('wp-looptype');
+			
+			console.log('parseData called for -'+apiName+'- has ok response');
+			console.log('loopType:'+loopType);
+			
+			var field_name 		=  	api_params[apiName]['params_out']['field_name'];
+			
+			api_params[apiName]['params_out']['field_data'] = data[field_name];
+			
+			if(loopType === "list"){
+				console.log('now processing list');
+				$this.find('[data-wp-field]').each(function(){
+					var $this = $(this);
+					console.log($this.data('wp-field'));
+				});
+				
+			}// end if
+				
+			
+		}else{
+			// FIXME buat error handling untuk wpCode lainnya
+			console.log('response is not ok. parseData called for -'+apiName+'- has code: '+data.wpCode+', message: '+data.wpMessage);
+			
+		}// end if wpCode 999
+	}else{
+		console.log('parseData called for -'+apiName+'- has error response');
 
-function parsePage(){
-
-	var apis = $('document').data('api-name');
-
-	var apiNames = [];
-	if(apis)
-		apiNames = apis.split(',');
-
-	for (var indexApiName = 0; indexApiName < apiNames.length; indexApiName++) {
-	   var apiName = $.trim(apiNames[indexApiName]);
-	   var default_params_value = $pageNow.data( apiName.toLowerCase() ) ;
-	   console.log("apiName: "+apiName);
-	   callApi(apiName, default_params_value);
-	}// end for apiNames
-
-	$pageNow.removeAttr("data-api-name");
-	$pageNow.removeData("api-name");
-
-}; // end document on parsePage
-
-/*
- * example of using
- * loadJsCssFile("myscript.js", "js") //dynamically load and add this .js file
- * loadJsCssFile("javascript.php", "js") //dynamically load "javascript.php" as a JavaScript file
- * loadJsCssFile("mystyle.css", "css") ////dynamically load and add this .css file
-*/
-function loadJsCssFile(filename, filetype){
-    if (filetype=="js"){ //if filename is a external JavaScript file
-        var fileref=document.createElement('script')
-        fileref.setAttribute("type","text/javascript")
-        fileref.setAttribute("src", filename)
-    }
-    else if (filetype=="css"){ //if filename is an external CSS file
-        var fileref=document.createElement("link")
-        fileref.setAttribute("rel", "stylesheet")
-        fileref.setAttribute("type", "text/css")
-        fileref.setAttribute("href", filename)
-    }
-    if (typeof fileref!="undefined")
-        document.getElementsByTagName("head")[0].appendChild(fileref)
-}// end loadJsCssFile
-
-$(function(){
-
-	//FIXME TESTING KALAU SUDAH DI WEB SERVER, apakah masih bener perhitungan index titiknya
-	var pathname = window.location.pathname
-	// alert("window.location.pathname: "+pathname);
-	var titikHtml = pathname.lastIndexOf(".html");
-	// alert("titikHtml: "+titikHtml);
-	var garisMiring = pathname.lastIndexOf("/");
+	}
 	
-	pathname = pathname.substring(garisMiring+1, titikHtml);
-	// alert("pathname now: "+pathname);
-	
-	loadJsCssFile(portal.uri_scripts+pathname+".js", "js");
+};// end parseData
 
+function parseApiName($this, pageContent){
+	if(pageContent){
+		// $this.parent().append(pageContent);
+		$this.after(pageContent);
+		var $pageContent = $this.next();
+
+		$.each( $this.data(),function(dataName, dataValue) {
+			$pageContent.data(dataName, dataValue);
+		});
+
+		var apiName = $this.data('wp-apiname');
 		
-}); // end $(function(){
+		if(apiName){
+			// apiName is given, now get the data from backend
+			var default_params_value = $this.data( 'wp-'+apiName.toLowerCase() ) ;
+			
+			var api_params_in = api_params[apiName]["params_in"];
+			var parameters = {};
+			parameters.pdid = localStorage['pdid'];
+			parameters.drid = localStorage['drid'];
+			parameters.dtk = localStorage['dtk'];
+			
+			var index_params_in = 0;
+
+			while(index_params_in < api_params_in.length){
+				var api_params_in_Name = api_params_in[index_params_in];
+				var valueFromRequest = getParameter(api_params_in_Name);
+
+				if(valueFromRequest == "" ){
+					if(default_params_value){
+						parameters[api_params_in_Name] = default_params_value[api_params_in_Name];
+					}else{
+						parameters[api_params_in_Name] = portal[api_params_in_Name];
+					}
+				}else{
+					if(default_params_value['enforce']){
+						parameters[api_params_in_Name] = default_params_value[api_params_in_Name];
+					}else{
+						parameters[api_params_in_Name] = valueFromRequest;
+					}
+				}// end else if valueFromRequest == ""
+				index_params_in++;
+			}// end while setting field parameters
+
+			getData(portal.url_api+apiName, 'POST', 'json', parameters, $pageContent, parseData);
+
+			$this.remove(); // remove in DOM but variable $this still has value, it is good enough, since it is now the end of the function
+			
+		}// end if apiName
+		
+		
+		
+	}else{
+		// fatal error handling
+		console.log('fatal error handling');
+	}// end else if pageContent
+};
+
+function registerNewDevice(drid, response){
+	
+	if (response.wpCode === "999") {
+		console.log("now writing to local storage");
+
+		localStorage.setItem("pdid",response.pdid);
+		localStorage.setItem("drid",drid);
+
+		parseBlockName(null, document);
+		
+	}else{
+		console.log("something not right happened...");
+		console.log("error code: "+response.wpCode);
+		console.log("error message: "+response.wpMessage);
+
+		alert("error code: "+response.wpCode+", error message: "+response.wpMessage);
+		window.location = "error.html";
+	}
+	
+};// end registerNewDevice
+
+function parseBlockName($this, domToBeParsed){
+	if(domToBeParsed){
+		$(domToBeParsed).find('[data-wp-blockname]').each(function(){
+			$this = $(this);
+			
+			var blockName = $this.data('wp-blockname');
+			console.log('now get: '+blockName);
+			console.log('portal.url_pages: '+portal.url_pages);
+			
+			getData(portal.url_pages+blockName, 'GET', 'html', null, $this, parseApiName);
+		});
+	}//end if domToBeParsed
+}// end parseBlockName
+
+function checkLocalStorage(){
+	if(!Modernizr.localstorage){
+		window.location = "not_supported.html";
+	}
+};
+
+function parseDocument(){
+	
+	console.log("portal.ver: "+portal.ver);
+
+	var pdid = localStorage["pdid"];
+	console.log("pdid: "+pdid);
+
+	var drid = localStorage["drid"];
+	console.log("drid: "+drid);
+
+	if(pdid == null || drid == null){
+		console.log("pdid or drid is null, now trying to get pdid from backend");
+		var drid = acak(1,100000000000,0);
+		var parameters = {};
+		parameters.ver = portal.ver;
+		parameters.drid = drid;
+		parameters.userDevice = checkDevice();
+
+		getData(portal.url_api+'registerNewDevice', 'POST', 'json', parameters, drid, registerNewDevice);
+		
+	}else{
+		parseBlockName(null, document);
+	}// end pdid drid null
+
+};
+
