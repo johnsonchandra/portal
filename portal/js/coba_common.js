@@ -2,7 +2,8 @@ var portal = {
 	url_api: 'http://localhost:8080/json/',
 	url_scripts: 'portal/js/',
 	url_styles: 'portal/css/',
-	url_pages: 'portal/pages/',
+//	url_pages: 'portal/pages/',
+	url_pages: 'http://localhost:8080/pages/',
 	ver: '800-000-1616.95.20150622',
 };
 
@@ -57,30 +58,95 @@ function getData(requestUrl, requestType, responseType, parameters, $this, callb
 function parseData($this, data){	
 	if(data){
 		if(data.wpCode === "999") {
-			$.each( $this.data(),function(i, e) {
-				console.log('name='+ i + ' value=' +e);
-			});
+//			$.each( $this.data(),function(i, e) {
+//				console.log('name='+ i + ' value=' +e);
+//			});
 			
 			var apiName = $this.data('wp-apiname');
-			var loopType = $this.data('wp-looptype');
-			
 			console.log('parseData called for -'+apiName+'- has ok response');
-			console.log('loopType:'+loopType);
 			
-			var field_name 		=  	api_params[apiName]['params_out']['field_name'];
+			var field_name 	= api_params[apiName]['params_out']['field_name'];
+			var field_data 	= data[field_name];
 			
-			api_params[apiName]['params_out']['field_data'] = data[field_name];
+			// just uncomment below line if you want to save to memory for later use
+			// api_params[apiName]['params_out']['field_data'] = field_data;
 			
-			if(loopType === "list"){
-				console.log('now processing list');
-				$this.find('[data-wp-field]').each(function(){
-					var $this = $(this);
-					console.log($this.data('wp-field'));
-				});
+			var $apiLoops = $this.find('[data-wp-looptype]');
+			
+			console.log("$this di dalam parseData: "+$this.attr('id'));
+			console.log("$apiLoops di dalam parseData: "+$apiLoops.attr('id'));
+			
+
+			var indexLoop = 0;
+			$($apiLoops).each(function(){
+				$thisApiLoop = $(this);
 				
-			}// end if
+				console.log($thisApiLoop.attr('id'));
 				
-			
+				var loopType = $thisApiLoop.data('wp-looptype');
+						
+				if(loopType === "list"){
+					var $apiRecords = $this.find('[data-wp-record="record"]');
+					var indexApiRecord = 0;
+	
+					$($apiRecords).each(function(){
+						$thisApiRecord = $(this);
+						for (var indexRecord=0; indexRecord < field_data.length; indexRecord++){
+	
+							var $apiFields = $thisApiRecord.find('[data-wp-field]');
+	
+							$($apiFields).each(function(){
+								
+								var $thisApiField = $(this);
+								var fieldNameInElement = $thisApiField.data('wp-field');
+	
+								// console.log('fieldNameInElement: '+fieldNameInElement);
+								
+								if($thisApiField.prop("tagName") == "IMG"){
+									$thisApiField.attr("src", field_data[indexRecord][fieldNameInElement]);
+								}
+								else if($thisApiField.prop("tagName") == "A"){
+									var apiLink = $thisApiField.data('wp-link');
+									var hrefNew = $thisApiField.data('wp-href');
+	
+									if(apiLink === "dynamic"){
+										hrefNew = field_data[indexRecord][hrefNew];
+									}
+	
+									hrefNew = hrefNew + "?";
+	
+									// var hrefNew = $thisApiField.data('api-href')+"?";
+	
+									var fieldLinks = fieldNameInElement.split(',');
+	
+									var indexFieldLink = 0;
+									while(indexFieldLink < fieldLinks.length){
+										var fieldLinkName = fieldLinks[indexFieldLink];
+										hrefNew = hrefNew+fieldLinkName+"="+field_data[indexRecord][fieldLinkName]+"&";
+										indexFieldLink++;
+									}// end while indexFieldLink
+									hrefNew = hrefNew.substring(0, (hrefNew.length-1) );
+									$thisApiField.attr("href", hrefNew);
+								}else{
+									if(field_data[indexRecord][fieldNameInElement])
+										$thisApiField.text(field_data[indexRecord][fieldNameInElement]);
+								} //end else if
+							});// end apiField.each
+	
+							$thisApiLoop.append($thisApiRecord.clone().attr('id',apiName+'_'+indexLoop+'_'+indexApiRecord+'_'+indexRecord));
+	
+						};// end for indexRecord
+						$thisApiRecord.first().remove();
+	
+						indexApiRecord++;
+					});// end apiRecords.each
+				
+					
+				}// end if loopType list
+
+				indexLoop++;
+			});// end apiLoop.each
+				
 		}else{
 			// FIXME buat error handling untuk wpCode lainnya
 			console.log('response is not ok. parseData called for -'+apiName+'- has code: '+data.wpCode+', message: '+data.wpMessage);
@@ -95,16 +161,17 @@ function parseData($this, data){
 
 function parseApiName($this, pageContent){
 	if(pageContent){
-		// $this.parent().append(pageContent);
 		$this.after(pageContent);
-		var $pageContent = $this.next();
-
+		var $pageContent = $this.next();		
+		
 		$.each( $this.data(),function(dataName, dataValue) {
 			$pageContent.data(dataName, dataValue);
 		});
 
 		var apiName = $this.data('wp-apiname');
-		
+
+		$this.remove(); // remove in DOM but variable $this still has value, it is good enough, since it is now the end of the function
+
 		if(apiName){
 			// apiName is given, now get the data from backend
 			var default_params_value = $this.data( 'wp-'+apiName.toLowerCase() ) ;
@@ -139,7 +206,6 @@ function parseApiName($this, pageContent){
 
 			getData(portal.url_api+apiName, 'POST', 'json', parameters, $pageContent, parseData);
 
-			$this.remove(); // remove in DOM but variable $this still has value, it is good enough, since it is now the end of the function
 			
 		}// end if apiName
 		
@@ -159,7 +225,7 @@ function registerNewDevice(drid, response){
 		localStorage.setItem("pdid",response.pdid);
 		localStorage.setItem("drid",drid);
 
-		parseBlockName(null, document);
+		parseBlockName();
 		
 	}else{
 		console.log("something not right happened...");
@@ -172,9 +238,8 @@ function registerNewDevice(drid, response){
 	
 };// end registerNewDevice
 
-function parseBlockName($this, domToBeParsed){
-	if(domToBeParsed){
-		$(domToBeParsed).find('[data-wp-blockname]').each(function(){
+function parseBlockName(){
+		$(document).find('[data-wp-blockname]').each(function(){
 			$this = $(this);
 			
 			var blockName = $this.data('wp-blockname');
@@ -183,7 +248,6 @@ function parseBlockName($this, domToBeParsed){
 			
 			getData(portal.url_pages+blockName, 'GET', 'html', null, $this, parseApiName);
 		});
-	}//end if domToBeParsed
 }// end parseBlockName
 
 function checkLocalStorage(){
@@ -213,7 +277,7 @@ function parseDocument(){
 		getData(portal.url_api+'registerNewDevice', 'POST', 'json', parameters, drid, registerNewDevice);
 		
 	}else{
-		parseBlockName(null, document);
+		parseBlockName();
 	}// end pdid drid null
 
 };

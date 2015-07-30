@@ -158,7 +158,7 @@ var api_params =
 		}
 	},
 	
-	getListCategoryCategory: {
+	getListCategoryProduct: {
 		params_in: ['viewSize','viewIndex'],
 		params_out: {
 			field_name:"entityList",
@@ -168,7 +168,7 @@ var api_params =
 			field_data:{}
 		}
 	},
-	getListCategoryProductParent: {
+	ecmcGetBizCategoryProductList: {
 		params_in: ['viewSize','viewIndex'],
 		params_out: {
 			field_name:"entityList",

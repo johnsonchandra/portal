@@ -23,40 +23,27 @@
 		<link rel="icon" href="images/favicon.ico">
 	</head>
 	<body>
-		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-theme" aria-expanded="false" aria-controls="navbar">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					
-					<div data-wp-blockname="logo.html">
-					</div>
-		
-				</div>
-				<div id="navbar-theme" class="navbar-collapse collapse" >
-						<div data-wp-blockname='menu.html' data-wp-looptype='list' data-wp-apiname='getListMenu' data-wp-getListMenu='{"viewSize":-1,"viewIndex":-1}'>
-						</div>
-				</div>
-			</div>
-		</nav>
-		
+
+		<div data-wp-blockname='header.html' data-wp-apiname='getListMenu' data-wp-getListMenu='{"viewSize":-1,"viewIndex":-1}'>
+		</div>
+
 		<main role="main" class="main-navbar-fixed-top">
 			<div class="section" >
-				<div class="container">
 				
-					<div data-wp-blockname='product_list.html' >
+				
+					<div data-wp-blockname='product_list.html' data-wp-apiname='ecmcGetBizCategoryProductList' >
 					</div>
 					
-				</div><!-- /.container -->
+					<div data-wp-blockname='product_list.html' data-wp-apiname='ecmcGetBizCategoryProductList' >
+					</div>
+					
+				
 			</div><!-- /.section -->
 		</main>
-
+<!-- 
 		<div data-wp-blockname='footer.html' data-wp-apiname='getListHub' >
 		</div>
+-->	
 		
 		<script src="scripts/jquery-2.1.4.min.js"></script>
 		<script src="scripts/bootstrap.min.js"></script>
