@@ -2,8 +2,8 @@ var portal = {
 	url_api: 'http://localhost:8080/json/',
 	url_scripts: 'portal/js/',
 	url_styles: 'portal/css/',
-//	url_pages: 'portal/pages/',
-	url_pages: 'http://localhost:8080/pages/',
+	url_blocks: 'portal/blocks/',
+//	url_blocks: 'http://localhost:8080/pages/',
 	ver: '800-000-1616.95.20150622',
 };
 
@@ -55,6 +55,67 @@ function getData(requestUrl, requestType, responseType, parameters, $this, callb
 	})
 }// end getPage
 
+
+function parseDataField($thisApiField, indexRecord, field_data){
+//	var $thisApiField = $(this);
+	var fieldNameInElement = $thisApiField.data('wp-field');
+
+	// console.log('fieldNameInElement: '+fieldNameInElement);
+	
+	if($thisApiField.prop("tagName") == "IMG"){
+		$thisApiField.attr("src", field_data[indexRecord][fieldNameInElement]);
+	}
+	else if($thisApiField.prop("tagName") == "A"){
+		var apiLink = $thisApiField.data('wp-link');
+		var hrefNew = $thisApiField.data('wp-href');
+
+		if(apiLink === "dynamic"){
+			hrefNew = field_data[indexRecord][hrefNew];
+		}
+
+		hrefNew = hrefNew + "?";
+
+		// var hrefNew = $thisApiField.data('api-href')+"?";
+
+		var fieldLinks = fieldNameInElement.split(',');
+
+		var indexFieldLink = 0;
+		while(indexFieldLink < fieldLinks.length){
+			var fieldLinkName = fieldLinks[indexFieldLink];
+			hrefNew = hrefNew+fieldLinkName+"="+field_data[indexRecord][fieldLinkName]+"&";
+			indexFieldLink++;
+		}// end while indexFieldLink
+		hrefNew = hrefNew.substring(0, (hrefNew.length-1) );
+		$thisApiField.attr("href", hrefNew);
+	}else{
+		if(field_data[indexRecord][fieldNameInElement])
+			$thisApiField.text(field_data[indexRecord][fieldNameInElement]);
+	} //end else if
+
+}
+
+function parseDataAsList($thisApiRecord, indexLoop, indexApiRecord, apiName, field_data){
+	for (var indexRecord=0; indexRecord < field_data.length; indexRecord++){
+
+		var $apiFields = $thisApiRecord.find('[data-wp-field]');
+
+		$($apiFields).each(function(){
+			parseDataField($(this), indexRecord, field_data);
+		});// end apiField.each
+
+		$thisApiLoop.append($thisApiRecord.clone());
+		
+//		use below line if you want to implement attribute id
+//		$thisApiLoop.append($thisApiRecord.clone().attr('id',apiName+'_'+indexLoop+'_'+indexApiRecord+'_'+indexRecord));
+		
+
+	};// end for indexRecord
+	$thisApiRecord.first().remove();
+}// end parseDataAsList
+
+
+
+
 function parseData($this, data){	
 	if(data){
 		if(data.wpCode === "999") {
@@ -68,8 +129,8 @@ function parseData($this, data){
 			var field_name 	= api_params[apiName]['params_out']['field_name'];
 			var field_data 	= data[field_name];
 			
-			// just uncomment below line if you want to save to memory for later use
-			// api_params[apiName]['params_out']['field_data'] = field_data;
+//uncomment below line if you use parsePage() instead of parseDocument()
+//api_params[apiName]['params_out']['field_data'] = field_data;
 			
 			var $apiLoops = $this.find('[data-wp-looptype]');
 			
@@ -80,68 +141,17 @@ function parseData($this, data){
 			var indexLoop = 0;
 			$($apiLoops).each(function(){
 				$thisApiLoop = $(this);
-				
-				console.log($thisApiLoop.attr('id'));
-				
 				var loopType = $thisApiLoop.data('wp-looptype');
-						
+					
+				
 				if(loopType === "list"){
 					var $apiRecords = $this.find('[data-wp-record="record"]');
 					var indexApiRecord = 0;
 	
 					$($apiRecords).each(function(){
-						$thisApiRecord = $(this);
-						for (var indexRecord=0; indexRecord < field_data.length; indexRecord++){
-	
-							var $apiFields = $thisApiRecord.find('[data-wp-field]');
-	
-							$($apiFields).each(function(){
-								
-								var $thisApiField = $(this);
-								var fieldNameInElement = $thisApiField.data('wp-field');
-	
-								// console.log('fieldNameInElement: '+fieldNameInElement);
-								
-								if($thisApiField.prop("tagName") == "IMG"){
-									$thisApiField.attr("src", field_data[indexRecord][fieldNameInElement]);
-								}
-								else if($thisApiField.prop("tagName") == "A"){
-									var apiLink = $thisApiField.data('wp-link');
-									var hrefNew = $thisApiField.data('wp-href');
-	
-									if(apiLink === "dynamic"){
-										hrefNew = field_data[indexRecord][hrefNew];
-									}
-	
-									hrefNew = hrefNew + "?";
-	
-									// var hrefNew = $thisApiField.data('api-href')+"?";
-	
-									var fieldLinks = fieldNameInElement.split(',');
-	
-									var indexFieldLink = 0;
-									while(indexFieldLink < fieldLinks.length){
-										var fieldLinkName = fieldLinks[indexFieldLink];
-										hrefNew = hrefNew+fieldLinkName+"="+field_data[indexRecord][fieldLinkName]+"&";
-										indexFieldLink++;
-									}// end while indexFieldLink
-									hrefNew = hrefNew.substring(0, (hrefNew.length-1) );
-									$thisApiField.attr("href", hrefNew);
-								}else{
-									if(field_data[indexRecord][fieldNameInElement])
-										$thisApiField.text(field_data[indexRecord][fieldNameInElement]);
-								} //end else if
-							});// end apiField.each
-	
-							$thisApiLoop.append($thisApiRecord.clone().attr('id',apiName+'_'+indexLoop+'_'+indexApiRecord+'_'+indexRecord));
-	
-						};// end for indexRecord
-						$thisApiRecord.first().remove();
-	
+						parseDataAsList($(this), indexLoop, indexApiRecord, apiName, field_data);
 						indexApiRecord++;
-					});// end apiRecords.each
-				
-					
+					});// end apiRecords.each	
 				}// end if loopType list
 
 				indexLoop++;
@@ -195,7 +205,7 @@ function parseApiName($this, pageContent){
 						parameters[api_params_in_Name] = portal[api_params_in_Name];
 					}
 				}else{
-					if(default_params_value['enforce']){
+					if(default_params_value && default_params_value['enforce']){
 						parameters[api_params_in_Name] = default_params_value[api_params_in_Name];
 					}else{
 						parameters[api_params_in_Name] = valueFromRequest;
@@ -244,9 +254,9 @@ function parseBlockName(){
 			
 			var blockName = $this.data('wp-blockname');
 			console.log('now get: '+blockName);
-			console.log('portal.url_pages: '+portal.url_pages);
+			console.log('portal.url_blocks: '+portal.url_blocks);
 			
-			getData(portal.url_pages+blockName, 'GET', 'html', null, $this, parseApiName);
+			getData(portal.url_blocks+blockName, 'GET', 'html', null, $this, parseApiName);
 		});
 }// end parseBlockName
 
@@ -255,7 +265,9 @@ function checkLocalStorage(){
 		window.location = "not_supported.html";
 	}
 };
-
+//use this function with the tradeoff:
+//disadvantage: call backend x times if same api is required x times
+//advantage: not using variable to store the response data
 function parseDocument(){
 	
 	console.log("portal.ver: "+portal.ver);
@@ -282,3 +294,28 @@ function parseDocument(){
 
 };
 
+//use this function with the tradeoff:
+//advantage: call backend 1 time although same api is required x times
+//disadvantage: using variable to store the response data
+//function parsePage(){
+//	sesuaikan dengan yg normal, karena gak pake jqm lagi
+//	portal.pageId = $('body').pagecontainer('getActivePage').prop('id');
+//
+//	var $pageNow = $('#'+portal.pageId);
+//	var apis = $pageNow.data('api-name');
+//
+//	var apiNames = [];
+//	if(apis)
+//		apiNames = apis.split(',');
+//
+//	for (var indexApiName = 0; indexApiName < apiNames.length; indexApiName++) {
+//	   var apiName = $.trim(apiNames[indexApiName]);
+//	   var default_params_value = $pageNow.data( apiName.toLowerCase() ) ;
+//	   console.log("apiName: "+apiName);
+//	   callApi(apiName, default_params_value);
+//	}// end for apiNames
+//
+//	$pageNow.removeAttr("data-api-name");
+//	$pageNow.removeData("api-name");
+//
+//}; // end document on parsePage
