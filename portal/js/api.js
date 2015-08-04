@@ -1,14 +1,28 @@
 var api_params =
 {
-// Article
-	getArticleList: {
-		params_in: ['viewSize','viewIndex'],
+	getOneRecord: {
+		params_in: ['bizProductId'],
 		params_out: {
-			field_name: "entityList",
-			field_type: "entityList",
-			field_data: {}
+			field_name:"BizProduct",
+			field_type: "EntityList",
+			field_data:{}
 		}
 	},
+	
+	
+	
+	ecmcGetBizBrandList:{
+		params_in: ['bizId','viewSize','viewIndex'],
+		params_out: {
+			field_name:"entityList",
+			field_type: "EntityList",
+			field_data:{}
+		}
+	},
+	
+	
+	
+	// Article	
 	getArticleDetail:{
 		params_in: ['articleId'],
 		params_out: {

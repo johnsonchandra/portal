@@ -24,31 +24,149 @@
 	</head>
 	<body>
 
-		<div data-wp-blockname='header.html' data-wp-apiname='getListMenu' data-wp-getListMenu='{"viewSize":5,"viewIndex":0}'>
+		<div 
+			data-wp-widget = 
+			'{
+				"title"				: "Menu",
+				"URL"				: "header.html",
+				"api_name"			: "getListMenu",
+				"api_params_in" 	: 
+				{
+
+				},
+				"api_params_out"	: 
+				{
+					"field_name"	:"entityList",
+					"field_type"	: "entityList"
+				},
+				"field_mapping" 	: 
+				{
+					"menu_link"	: {
+						"href_params"	: "brandId",
+						"text"			: "brandName"
+					}
+				}
+			}'
+		>
 		</div>
 
 		<main role="main" class="main-navbar-fixed-top">
-			
+		
 			<div class="section">
-				<div data-wp-blockname='list_card_imgSquare.html' data-wp-apiname='ecmcGetBizCategoryProductList' >
+				<div 
+					data-wp-widget = 
+					'{
+						"title"				: "Portfolio",
+						"URL"				: "card_profile.html",
+						"api_name"			: "getOneRecord",
+						"api_params_in" 	: 
+						{
+							"bizProductId" 	: "WP.12649",
+							"enforce"		: true
+						},
+						"api_params_out"	: 
+						{
+							"field_name"	:"BizProduct",
+							"field_type"	: "entity"
+						},
+						"field_mapping" 	: 
+						{
+							"gambar"	: {
+								"src"	: "trxTimestamp",
+								"alt"	: "productName",
+								"text"	: "productPrice"
+							},
+							"judul"		: {
+								"text"	: "productName"
+							},
+							"sub_judul"	: {
+								"text"	: "productName"
+							},
+							"keterangan": {
+								"text"	: "productSku"
+							},
+							"text_link"	: {
+								"href"			: "mainPhoneNumber",
+								"href_params"	: "typeId, statusId",
+								"text"			: "createdByUserLogin"
+							}
+						}
+					}'
+					>
 				</div>
 			</div><!-- /.section -->
-			
-			<div class="section">
-				<div data-wp-blockname='list_card_imgRound.html' data-wp-apiname='ecmcGetBizCategoryProductList' >
+
+<div class="section">
+				<div 
+					data-wp-widget = 
+					'{
+						"title"				: "Ini Riwayat Hidup",
+						"URL"				: "card_profile.html",
+						"api_name"			: "getOneRecord",
+						"api_params_in" 	: 
+						{
+							"bizProductId" 	: "WP.12649",
+							"enforce"		: true
+						},
+						"api_params_out"	: 
+						{
+							"field_name"	:"BizProduct",
+							"field_type"	: "entity"
+						},
+						"field_mapping" 	: 
+						{
+							"gambar"	: {
+								"src"	: "trxTimestamp",
+								"alt"	: "productName",
+								"text"	: "productPrice"
+							},
+							"judul"		: {
+								"text"	: "productName"
+							},
+							"sub_judul"	: {
+								"text"	: "productName"
+							},
+							"keterangan": {
+								"text"	: "productSku"
+							},
+							"text_link"	: {
+								"href"			: "mainPhoneNumber",
+								"href_params"	: "typeId, statusId",
+								"text"			: "createdByUserLogin"
+							}
+						}
+					}'
+					>
 				</div>
 			</div><!-- /.section -->
-			
+
+<!-- 
+			<div class="section">
+				<div data-wp-widget-title='Product Category List' data-wp-widget-name='list_card_imgSquare.html' data-wp-api-name='ecmcGetBizCategoryProductList' data-wp-api-ecmcGetBizCategoryProductList='{"enforce":true,"viewSize":5,"viewIndex":0}'>
+				</div>
+			</div><!-- /.section -->
+
+<!-- 
+			<div class="section">
+				<div 
+					data-wp-widget-title='Brand List' 
+					data-wp-widget-name='list_card_imgRound.html' 
+					data-wp-api-name='ecmcGetBizBrandList' 
+					data-wp-api-ecmcGetBizBrandList='{"bizId":"paveels"}'
+				>
+				</div>
+			</div><!-- /.section -->
+
+
 		</main>
 
-		<div data-wp-blockname='footer.html' data-wp-apiname='getListHub'>
+		<div data-wp-widgetname='footer.html' data-wp-apiname='getListHub'>
 		</div>
 		
 		<script src="scripts/jquery-2.1.4.min.js"></script>
 		<script src="scripts/bootstrap.min.js"></script>
 		<script src="scripts/bootstrap-extended.js"></script>
 		<script src="scripts/modernizr.js"></script>
-		<script src="portal/js/api.js"></script>
 		<script src="portal/js/coba_common.js"></script>
 		<script src="portal/js/coba.js"></script>
 		
