@@ -56,43 +56,37 @@ function getData(requestUrl, requestType, responseType, parameters, $this, callb
 
 function parseDataField($thisApiField, field_mapping, field_data){
 	var fieldMappingElement = field_mapping[$thisApiField.data('wp-widget')];
-	console.log("fieldMappingElement: "+fieldMappingElement);
 	
 	if($thisApiField.prop("tagName") == "A"){
-		var hrefNew = fieldMappingElement['href'];
-		
-		console.log("hrefNew before: "+hrefNew);
-		
-		if(hrefNew){
-			hrefNew = field_data[fieldMappingElement['href']];
-		}else{
-			hrefNew = $thisApiField.attr('href'); //FIXME kalau static disini jadi berulang terus
+		var href = fieldMappingElement['href'];
+		var hrefType = fieldMappingElement['href_type'];
+				
+		if(hrefType === "dynamic"){
+			href = field_data[fieldMappingElement['href']];
 		}
-		console.log("hrefNew after: "+hrefNew);
 
-		hrefNew = hrefNew + "?";
+		href = href + "?";
 		
 		var wpHrefParams = fieldMappingElement['href_params'];
-		console.log("wpHrefParams: "+wpHrefParams);
+
 		if(wpHrefParams){
 			var fieldLinks = wpHrefParams.split(',');
 			if(fieldLinks){
 				var indexFieldLink = 0;
 				while(indexFieldLink < fieldLinks.length){
 					var fieldLinkName = fieldLinks[indexFieldLink].trim();
-					hrefNew = hrefNew+fieldLinkName+"="+field_data[fieldLinkName]+"&";
+					href = href+fieldLinkName+"="+field_data[fieldLinkName]+"&";
 					indexFieldLink++;
 				}// end while indexFieldLink
 			}
 		}
 		
-		hrefNew = hrefNew.substring(0, (hrefNew.length-1) );
+		href = href.substring(0, (href.length-1) );
 
-//		console.log("hrefNew after loop: "+hrefNew);
 		var textLink = field_data[fieldMappingElement['text']];
 		if(textLink)
 			$thisApiField.text(field_data[fieldMappingElement['text']]);
-		$thisApiField.attr("href", hrefNew);
+		$thisApiField.attr("href", href);
 	}else{
 		for(var fieldMappingElementAttr in fieldMappingElement){
 			if(fieldMappingElementAttr === "text"){
@@ -105,26 +99,29 @@ function parseDataField($thisApiField, field_mapping, field_data){
 }// end parseDataField
 
 
-function parseRecord($thisApiRecord, indexLoop, indexApiRecord, apiName, field_mapping, field_data){
-	console.log("di dalam parseRecord");
-
+function parseRecord($thisApiRecord, dataFieldToFill, field_mapping, field_data, fieldKey){
 	if(field_data.length){
+		// berarti list
 		for (var indexRecord=0; indexRecord < field_data.length; indexRecord++){
-			var $apiFields = $thisApiRecord.find('[data-wp-widget]');
+			var $apiFields = $thisApiRecord.find(dataFieldToFill);
 
 			$($apiFields).each(function(){
 				parseDataField($(this), field_mapping, field_data[indexRecord]);
 			});// end apiField.each
 
+			if(fieldKey)
+				$thisApiRecord.attr('data-wp-record-parent',field_data[indexRecord][fieldKey]);
+			
 			$thisApiLoop.append($thisApiRecord.clone());
 			
-//			use below line if you want to implement attribute id
+//			use below line if you want to implement attribute id, and please add the parameters in the function
 //			$thisApiLoop.append($thisApiRecord.clone().attr('id',apiName+'_'+indexLoop+'_'+indexApiRecord+'_'+indexRecord));
 			
 
 		};// end for indexRecord
 		$thisApiRecord.first().remove();
 	}else{
+		// berarti satu record doank
 		var $apiFields = $thisApiRecord.find('[data-wp-widget]');
 
 		$($apiFields).each(function(){
@@ -151,17 +148,61 @@ function parseData($this, data){
 			var field_mapping = widgetParams['field_mapping'];
 
 			var $apiLoops = $this.find('[data-wp-loop]');			
-
+			
 			var indexLoop = 0;
 			$($apiLoops).each(function(){
 				$thisApiLoop = $(this);
+				
+				var wpLoop = $thisApiLoop.data('wp-loop');
+				console.log("wpLoop: "+wpLoop);
+				
 				var $apiRecords = $this.find('[data-wp-record="record"]');
 				var indexApiRecord = 0;
+				
+				if(wpLoop === "list_parent"){
+					console.log('now working on parent');
+					
+					var fieldKey = widgetParams['api_params_out']['field_key'];
+					var fieldParent = widgetParams['api_params_out']['field_parent'];
+					
+					var parent_data = $.grep(field_data, function(e){
+						return e[fieldParent] == null;
+					});// end grep
 
-				$($apiRecords).each(function(){
-					parseRecord($(this), indexLoop, indexApiRecord, apiName, field_mapping, field_data);
-					indexApiRecord++;
-				});// end apiRecords.each			
+					$($apiRecords).each(function(){
+						//add indexLoop, indexApiRecord, apiName to parameters if you want to generate unique id
+						parseRecord($(this), '[data-wp-widget]', field_mapping, parent_data, fieldKey);
+						
+						indexApiRecord++;
+					});// end apiRecords.each
+										
+					console.log('now working on children');
+					for(var indexParentRecord=0; indexParentRecord < parent_data.length; indexParentRecord++){
+						var children_data = $.grep(field_data, function(e){
+							return e[fieldParent] == parent_data[indexParentRecord][fieldKey];
+						});// end grep children
+						
+						var $parentRecord = $this.find('[data-wp-record-parent="'+parent_data[indexParentRecord][fieldKey]+'"]');
+						var $childrenRecords = $parentRecord.find('[data-wp-record-child="record"]');
+						$($childrenRecords).each(function(){
+							parseRecord($(this), '[data-wp-widget-child]', field_mapping, children_data);
+							
+						});// end apiRecords.each
+						
+						
+						
+					}// end for indexParentRecord
+
+					
+					
+				}else{
+					$($apiRecords).each(function(){
+						//add indexLoop, indexApiRecord, apiName to parameters if you want to generate unique id
+						parseRecord($(this), '[data-wp-widget]', field_mapping, field_data, null);
+						indexApiRecord++;
+					});// end apiRecords.each
+				}// end else if wploop
+
 				indexLoop++;
 			});// end apiLoop.each
 				

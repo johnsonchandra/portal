@@ -1,18 +1,13 @@
 
 	<div class="container">
 		<h2 class="yellow-block" data-wp-widget='title' >Title</h2>
-		<ul data-wp-loop="list-parent">
-			<li data-wp-record="parent">
-				<a href="" data-wp-href="category.html" data-wp-field="categoryId" data-wp-link="static" >
-					<p data-wp-field="categoryName">
-							ini bapak 1
-					</p>
+		<ul data-wp-loop='list_parent'>
+			<li data-wp-record='record'>
+				<a href="" data-wp-widget="parent_link" >
 				</a>
-				<ul data-wp-loop="list-children">
-					<li data-wp-record="children">
-						<a href="" data-wp-href="category.html" data-wp-field="categoryId" data-wp-link="static" >
-							<p data-wp-field="categoryName">ini anak 1 dari bapak 1</p>
-						</a>
+				<ul data-wp-loop-child='list'>
+					<li data-wp-record-child='record'>
+						<p data-wp-widget-child="child_link">ini anak</p>
 					</li>
 				</ul>
 			</li>

@@ -24,6 +24,7 @@
 	</head>
 	<body>
 
+<!-- 
 		<div 
 			data-wp-widget = 
 			'{
@@ -42,6 +43,8 @@
 				"field_mapping" 	: 
 				{
 					"menu_link"	: {
+						"href"			: "brand.html",
+						"href_type"		: "static",
 						"href_params"	: "brandId",
 						"text"			: "brandName"
 					}
@@ -49,9 +52,11 @@
 			}'
 		>
 		</div>
-
+ -->
+ 
 		<main role="main" class="main-navbar-fixed-top">
 		
+<!-- 
 			<div class="section">
 				<div 
 					data-wp-widget = 
@@ -87,6 +92,7 @@
 							},
 							"text_link"	: {
 								"href"			: "mainPhoneNumber",
+								"href_type"		: "dynamic",
 								"href_params"	: "typeId, statusId",
 								"text"			: "createdByUserLogin"
 							}
@@ -96,43 +102,44 @@
 				</div>
 			</div><!-- /.section -->
 
-<div class="section">
+
+			<div class="section">
 				<div 
 					data-wp-widget = 
 					'{
-						"title"				: "Ini Riwayat Hidup",
-						"URL"				: "card_profile.html",
-						"api_name"			: "getOneRecord",
+						"title"				: "Ini list parent children",
+						"URL"				: "list_li_parentchildren.html",
+						"api_name"			: "ecmcGetBizCategoryProductList",
 						"api_params_in" 	: 
 						{
-							"bizProductId" 	: "WP.12649",
+							"bizId" 		: "paveels",
+							"viewIndex"		: -1,
+							"viewSize"		: -1,
 							"enforce"		: true
 						},
 						"api_params_out"	: 
 						{
-							"field_name"	:"BizProduct",
-							"field_type"	: "entity"
+							"field_name"	:"entityList",
+							"field_type"	: "entityList",
+							"field_key"		: "categoryId",
+							"field_parent"	: "parentCategoryId"
 						},
 						"field_mapping" 	: 
 						{
-							"gambar"	: {
-								"src"	: "trxTimestamp",
-								"alt"	: "productName",
-								"text"	: "productPrice"
+							"parent_name": {
+								"text"	: "categoryName"
 							},
-							"judul"		: {
-								"text"	: "productName"
-							},
-							"sub_judul"	: {
-								"text"	: "productName"
-							},
-							"keterangan": {
-								"text"	: "productSku"
-							},
-							"text_link"	: {
-								"href"			: "mainPhoneNumber",
+							"parent_link"	: {
+								"href"			: "category.html",
+								"href_type"		: "static",
 								"href_params"	: "typeId, statusId",
-								"text"			: "createdByUserLogin"
+								"text"			: "categoryName"
+							},
+							"child_link"	: {
+								"href"			: "category.html",
+								"href_type"		: "static",
+								"href_params"	: "typeId, statusId",
+								"text"			: "categoryName"
 							}
 						}
 					}'
