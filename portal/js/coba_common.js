@@ -57,6 +57,9 @@ function getData(requestUrl, requestType, responseType, parameters, $this, callb
 function parseDataField($thisApiField, field_mapping, field_data){
 	var fieldMappingElement = field_mapping[$thisApiField.data('wp-widget')];
 	
+	if (fieldMappingElement == undefined)
+		fieldMappingElement = field_mapping[$thisApiField.data('wp-widget-child')];
+	
 	if($thisApiField.prop("tagName") == "A"){
 		var href = fieldMappingElement['href'];
 		var hrefType = fieldMappingElement['href_type'];
@@ -99,13 +102,16 @@ function parseDataField($thisApiField, field_mapping, field_data){
 }// end parseDataField
 
 
-function parseRecord($thisApiRecord, dataFieldToFill, field_mapping, field_data, fieldKey){
+function parseRecord($thisApiLoop, $thisApiRecord, dataFieldToFill, field_mapping, field_data, fieldKey){
 	if(field_data.length){
 		// berarti list
 		for (var indexRecord=0; indexRecord < field_data.length; indexRecord++){
 			var $apiFields = $thisApiRecord.find(dataFieldToFill);
 
 			$($apiFields).each(function(){
+				
+				console.log('field_data[indexRecord]: '+field_data[indexRecord][fieldKey]);
+				
 				parseDataField($(this), field_mapping, field_data[indexRecord]);
 			});// end apiField.each
 
@@ -156,7 +162,7 @@ function parseData($this, data){
 				var wpLoop = $thisApiLoop.data('wp-loop');
 				console.log("wpLoop: "+wpLoop);
 				
-				var $apiRecords = $this.find('[data-wp-record="record"]');
+				var $apiRecords = $thisApiLoop.find('[data-wp-record="record"]');
 				var indexApiRecord = 0;
 				
 				if(wpLoop === "list_parent"){
@@ -171,7 +177,7 @@ function parseData($this, data){
 
 					$($apiRecords).each(function(){
 						//add indexLoop, indexApiRecord, apiName to parameters if you want to generate unique id
-						parseRecord($(this), '[data-wp-widget]', field_mapping, parent_data, fieldKey);
+						parseRecord($thisApiLoop, $(this), '[data-wp-widget]', field_mapping, parent_data, fieldKey);
 						
 						indexApiRecord++;
 					});// end apiRecords.each
@@ -182,13 +188,26 @@ function parseData($this, data){
 							return e[fieldParent] == parent_data[indexParentRecord][fieldKey];
 						});// end grep children
 						
-						var $parentRecord = $this.find('[data-wp-record-parent="'+parent_data[indexParentRecord][fieldKey]+'"]');
-						var $childrenRecords = $parentRecord.find('[data-wp-record-child="record"]');
-						$($childrenRecords).each(function(){
-							parseRecord($(this), '[data-wp-widget-child]', field_mapping, children_data);
-							
-						});// end apiRecords.each
+						console.log('parent_data[indexParentRecord][fieldKey]: '+parent_data[indexParentRecord][fieldKey]);
 						
+						var $parentRecord = $thisApiLoop.find('[data-wp-record-parent="'+parent_data[indexParentRecord][fieldKey]+'"]');
+						console.log('$parentRecord: '+$parentRecord.attr('id'));
+
+						var $childApiLoops = $parentRecord.find('[data-wp-loop-child="list"]');
+						console.log('$childApiLoops: '+$childApiLoops.attr('id'));
+
+						$($childApiLoops).each(function(){
+							console.log('masuk ke anak');
+							
+							$this = $(this);
+							var $childrenRecords = $this.find('[data-wp-record-child="record"]');
+							
+							$($childrenRecords).each(function(){
+								parseRecord($this, $(this), '[data-wp-widget-child]', field_mapping, children_data, fieldKey);
+								
+							});// end apiRecords.each
+
+						})
 						
 						
 					}// end for indexParentRecord
@@ -198,7 +217,7 @@ function parseData($this, data){
 				}else{
 					$($apiRecords).each(function(){
 						//add indexLoop, indexApiRecord, apiName to parameters if you want to generate unique id
-						parseRecord($(this), '[data-wp-widget]', field_mapping, field_data, null);
+						parseRecord($thisApiLoop, $(this), '[data-wp-widget]', field_mapping, field_data, null);
 						indexApiRecord++;
 					});// end apiRecords.each
 				}// end else if wploop
@@ -288,7 +307,7 @@ function registerNewDevice(drid, response){
 		console.log("error message: "+response.wpMessage);
 
 		alert("error code: "+response.wpCode+", error message: "+response.wpMessage);
-		window.location = "error.html";
+//		window.location = "error.html";
 	}
 	
 };// end registerNewDevice

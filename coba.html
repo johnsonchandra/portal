@@ -24,7 +24,6 @@
 	</head>
 	<body>
 
-<!-- 
 		<div 
 			data-wp-widget = 
 			'{
@@ -37,8 +36,7 @@
 				},
 				"api_params_out"	: 
 				{
-					"field_name"	:"entityList",
-					"field_type"	: "entityList"
+					"field_name"	:"entityList"
 				},
 				"field_mapping" 	: 
 				{
@@ -52,11 +50,11 @@
 			}'
 		>
 		</div>
- -->
+ 
  
 		<main role="main" class="main-navbar-fixed-top">
 		
-<!-- 
+
 			<div class="section">
 				<div 
 					data-wp-widget = 
@@ -71,8 +69,7 @@
 						},
 						"api_params_out"	: 
 						{
-							"field_name"	:"BizProduct",
-							"field_type"	: "entity"
+							"field_name"	:"BizProduct"
 						},
 						"field_mapping" 	: 
 						{
@@ -120,7 +117,6 @@
 						"api_params_out"	: 
 						{
 							"field_name"	:"entityList",
-							"field_type"	: "entityList",
 							"field_key"		: "categoryId",
 							"field_parent"	: "parentCategoryId"
 						},
@@ -136,8 +132,8 @@
 								"text"			: "categoryName"
 							},
 							"child_link"	: {
-								"href"			: "category.html",
-								"href_type"		: "static",
+								"href"			: "trxTimestamp",
+								"href_type"		: "dynamic",
 								"href_params"	: "typeId, statusId",
 								"text"			: "categoryName"
 							}
@@ -147,7 +143,7 @@
 				</div>
 			</div><!-- /.section -->
 
-<!-- 
+<!--
 			<div class="section">
 				<div data-wp-widget-title='Product Category List' data-wp-widget-name='list_card_imgSquare.html' data-wp-api-name='ecmcGetBizCategoryProductList' data-wp-api-ecmcGetBizCategoryProductList='{"enforce":true,"viewSize":5,"viewIndex":0}'>
 				</div>
@@ -167,7 +163,12 @@
 
 		</main>
 
-		<div data-wp-widgetname='footer.html' data-wp-apiname='getListHub'>
+		<div 
+		data-wp-widget = 
+			'{
+				"URL"				: "footer.html"
+			}'
+		>
 		</div>
 		
 		<script src="scripts/jquery-2.1.4.min.js"></script>
