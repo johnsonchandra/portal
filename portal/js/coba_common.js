@@ -276,7 +276,7 @@ function parseApiName($this, pageContent){
 				}else{
 					var valueFromRequest = getParameter(param_name);
 					if(valueFromRequest == "" ){
-						if(paramName != "enforce")
+						if(param_name != "enforce")
 							parameters[param_name] = api_params_in[param_name];
 					}else{
 						parameters[param_name] = valueFromRequest;
