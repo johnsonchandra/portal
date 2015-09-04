@@ -80,6 +80,9 @@
 		<script src="portal/js/cobaAWSJS_kedua.js"></script>
 
 
+		<button id="sudah_login">sudah login loh</button>
+		
+		
 		<div id="status"></div>
 		<ul id="objects"></ul>
 
@@ -112,7 +115,13 @@
 			button.addEventListener('click', function() {
 				var file = fileChooser.files[0];
 				if (file) {
+					
 					var identityId = AWS.config.credentials.identityId;
+					
+					var identityId = "us-east-1:067e98fb-a231-4e0b-a5d4-5bb5882ce7d9";
+					
+					console.log(identityId);
+					
 					var params = 
 					{
 						Key: identityId+'/'+file.name, 
@@ -148,6 +157,15 @@
 				} // end if file
 			}, false); // end on click
 
+			var button_sudah_login = document.getElementById('sudah_login');
+			
+			button_sudah_login.addEventListener('click', function() {
+				console.log("click");
+				
+				userLoggedIn("developerProviderNameSendiri", "eyJraWQiOiJ1cy1lYXN0LTExIiwidHlwIjoiSldTIiwiYWxnIjoiUlM1MTIifQ.eyJzdWIiOiJ1cy1lYXN0LTE6MDY3ZTk4ZmItYTIzMS00ZTBiLWE1ZDQtNWJiNTg4MmNlN2Q5IiwiYXVkIjoidXMtZWFzdC0xOmIyMjQyNTVjLWQwOGMtNDUzMi1iMmQxLWZmOWNmNzM0ZWFhNiIsImFtciI6WyJhdXRoZW50aWNhdGVkIiwiZGV2ZWxvcGVyUHJvdmlkZXJOYW1lU2VuZGlyaSJdLCJpc3MiOiJodHRwczovL2NvZ25pdG8taWRlbnRpdHkuYW1hem9uYXdzLmNvbSIsImV4cCI6MTQ0MTM2OTMyOSwiaWF0IjoxNDQxMjgyOTI5fQ.KHhqgDrEN1DRisjNIDgCdI7V2wtatw_5PpPk8BpGUTCnv5tMyFLkG_PNwRnt9skQ3IbSOJjtZt2uqpnahTqL0cwWahDJ2603CG8UFwRGESIl2oRjafavJBhcgDmHoyjvAXDb6VGqN_znHU7Xyja9Z1S6F_eeMfSrV8meqb6bBv2W-KP_a-_iDNdguV02OTS5CIPMzy-oJY1aeIfcruPlXF13yqEKDGsvsgJzbhVFf8879bsjo44jbD_mSuffTbnsR3TkA8NYvq3TPz5gcDqh7qpy05AzSKATwKXM-Op0BwmGsbGQLhSau0_LVWbIUChH2EcbPDa54p2pIhgpzdFw6g");
+				
+			}, false);
+			
 		</script>
 
 	</body>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<meta name="version" content="Bootstrap 3.3.5">
+		<title>Portal Coba AWS JS</title>
+
+		<link href="styles/bootstrap.min.css" rel="stylesheet">
+		<link href="styles/bootstrap-extended.css" rel="stylesheet">
+		<link href="styles/bootstrap-extended-theme.css" rel="stylesheet">
+
+		<!-- [if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif] -->
+		
+		<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+		<link rel="icon" href="images/favicon.ico">
+
+
+	</head>
+	<body>
+
+		<div id="identityId"></div>
+		<br/>
+		<br/>
+		<div id="token"></div>
+		<br/>
+		<br/>
+
+
+		<div id="status"></div>
+		<br/>
+		<br/>
+
+		<ul id="objects"></ul>
+		<br/>
+		<br/>
+
+		<input type="file" id="file-chooser" /> 
+		<button id="upload-button">Upload to S3</button>
+		<br/>
+		<br/>
+
+		<div id="results"></div>
+
+
+
+		<script src="scripts/jquery-2.1.4.min.js"></script>
+		<script src="scripts/bootstrap.min.js"></script>
+		<script src="scripts/bootstrap-extended.js"></script>
+		<script src="scripts/aws-sdk-2.1.44.min.js"></script>
+		<script src="portal/js/coba_common.js"></script>
+
+<script type="text/javascript">
+
+AWS.config.region = 'us-east-1';
+AWS.config.logger = console;
+
+function panggilS3(){
+	var bucket = new AWS.S3(
+			{
+				params: {Bucket: 'jcha'}
+			}
+		);
+		bucket.listObjects(function (err, data) {
+			if (err) {
+				document.getElementById('status').innerHTML = 'Could not load objects from S3';
+			} else {
+				document.getElementById('status').innerHTML = 'Loaded ' + data.Contents.length + ' items from S3';
+				for (var i = 0; i < data.Contents.length; i++) {
+					document.getElementById('objects').innerHTML += '<li>' + data.Contents[i].Key + '</li>';
+				}
+			}
+		}); // end bucket.listObjects
+	
+}// end panggilS3
+
+
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-east-1:b224255c-d08c-4532-b2d1-ff9cf734eaa6',
+        IdentityId : 'us-east-1:067e98fb-a231-4e0b-a5d4-5bb5882ce7d9'
+    });
+
+	var cognitoidentity = new AWS.CognitoIdentity();
+
+	var params = {
+		IdentityPoolId: 'us-east-1:b224255c-d08c-4532-b2d1-ff9cf734eaa6',
+		Logins: {
+			'developerProviderNameSendiri': 'user1'
+		},
+		IdentityId: 'us-east-1:067e98fb-a231-4e0b-a5d4-5bb5882ce7d9',
+		TokenDuration: 3600
+	};
+
+	cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
+		if (err) {
+			console.log(err, err.stack); // an error occurred
+		}
+		else
+		{
+			console.log(data);           // successful response		  
+			panggilS3();
+		}
+	});
+	 	
+		 
+/* 	getData(portal.url_api+'getCognitoToken', 'GET', 'json', null, null, parseToken);
+ */
+ 
+</script>
+
+	</body>
+</html>
